@@ -1,0 +1,67 @@
+Invalid MIT-MAGIC-COOKIE-1 key
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (main, 620c9ea40)
+--     . using deal.II 9.5.2
+--     .       with 32 bit indices
+--     .       with vectorization level 2 (AVX, 4 doubles, 256 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 1.0.0
+--     . running in OPTIMIZED mode
+--     . running with 64 MPI processes
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&GWB=1&particles=1&sha=620c9ea40&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 49,152 (on 7 levels)
+Number of degrees of freedom: 1,828,362 (395,266+49,665+197,633+197,633+197,633+197,633+197,633+197,633+197,633)
+
+Number of mesh deformation degrees of freedom: 99,330
+   Solving mesh displacement system... 0 iterations.
+Number of active cells: 19,614 (on 8 levels)
+Number of degrees of freedom: 759,853 (164,238+20,782+82,119+82,119+82,119+82,119+82,119+82,119+82,119)
+
+Number of mesh deformation degrees of freedom: 41,564
+   Solving mesh displacement system... 0 iterations.
+Number of active cells: 11,271 (on 9 levels)
+Number of degrees of freedom: 457,873 (98,934+12,670+49,467+49,467+49,467+49,467+49,467+49,467+49,467)
+
+Number of mesh deformation degrees of freedom: 25,340
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 328+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 1
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 493+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 2: 3.55707
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 713+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 3: 13.0265
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 923+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 4: 62.9739
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 971+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 5: 93.5044
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 1192+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 6: 141.264
+
+   Rebuilding Stokes preconditioner...
+   Solving Stokes system (AMG)... 

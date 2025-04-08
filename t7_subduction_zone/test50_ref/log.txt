@@ -1,0 +1,74 @@
+-----------------------------------------------------------------------------
+--                             This is ASPECT                              --
+-- The Advanced Solver for Planetary Evolution, Convection, and Tectonics. --
+-----------------------------------------------------------------------------
+--     . version 3.1.0-pre (main, 620c9ea40)
+--     . using deal.II 9.5.2
+--     .       with 32 bit indices
+--     .       with vectorization level 2 (AVX, 4 doubles, 256 bits)
+--     . using Trilinos 14.4.0
+--     . using p4est 2.3.2
+--     . using Geodynamic World Builder 1.0.0
+--     . running in OPTIMIZED mode
+--     . running with 32 MPI processes
+-----------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+-- For information on how to cite ASPECT, see:
+--   https://aspect.geodynamics.org/citing.html?ver=3.1.0-pre&GWB=1&mf=1&particles=1&sha=620c9ea40&src=code
+-----------------------------------------------------------------------------
+Number of active cells: 49,152 (on 7 levels)
+Number of degrees of freedom: 1,828,362 (395,266+49,665+197,633+197,633+197,633+197,633+197,633+197,633+197,633)
+
+Number of mesh deformation degrees of freedom: 99,330
+   Solving mesh displacement system... 0 iterations.
+Number of active cells: 18,291 (on 8 levels)
+Number of degrees of freedom: 709,347 (153,318+19,416+76,659+76,659+76,659+76,659+76,659+76,659+76,659)
+
+Number of mesh deformation degrees of freedom: 38,832
+   Solving mesh displacement system... 0 iterations.
+Number of active cells: 10,629 (on 9 levels)
+Number of degrees of freedom: 432,602 (93,470+11,987+46,735+46,735+46,735+46,735+46,735+46,735+46,735)
+
+Number of mesh deformation degrees of freedom: 23,974
+   Solving mesh displacement system... 0 iterations.
+*** Timestep 0:  t=0 years, dt=0 years
+   Solving mesh displacement system... 0 iterations.
+   Solving temperature system... 0 iterations.
+   Advecting particles...  done.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 268+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.000438523
+
+
+   Postprocessing:
+     Writing graphical output:  test50_ref/solution/solution-00000
+     Compositions min/max/mass: 0/0/0 // 0/0/0 // 0/1/2.496e+13 // 0/1/2.194e+10 // 0/1/2.093e+11 // 0/1/4.337e+10
+     RMS, max velocity:         0.000321 m/year, 0.00307 m/year
+     Writing particle output:   test50_ref/particles/particles-00000
+
+*** Timestep 1:  t=1000 years, dt=1000 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 5 iterations.
+   Solving temperature system... 7 iterations.
+   Advecting particles...  done.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 355+0 iterations.
+      Relative nonlinear residual (Stokes system) after nonlinear iteration 1: 0.00056889
+
+
+   Postprocessing:
+     Compositions min/max/mass:    0/0/0 // 0/0/0 // 0/1/2.496e+13 // 0/1/2.194e+10 // 0/1/2.093e+11 // 0/1/4.337e+10
+     RMS, max velocity:            0.00173 m/year, 0.0262 m/year
+     Number of advected particles: 520821
+
+*** Timestep 2:  t=2910 years, dt=1910 years
+   Solving mesh surface diffusion
+   Solving mesh displacement system... 5 iterations.
+   Solving temperature system... 9 iterations.
+   Advecting particles...  done.
+   Skipping porosity composition solve because RHS is zero.
+   Skipping bound_fluid composition solve because RHS is zero.
+   Solving Stokes system (GMG)... 

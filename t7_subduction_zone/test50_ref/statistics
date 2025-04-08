@@ -1,0 +1,39 @@
+# 1: Time step number
+# 2: Time (years)
+# 3: Time step size (years)
+# 4: Number of mesh cells
+# 5: Number of Stokes degrees of freedom
+# 6: Number of temperature degrees of freedom
+# 7: Number of degrees of freedom for all compositions
+# 8: Number of nonlinear iterations
+# 9: Iterations for temperature solver
+# 10: Iterations for composition solver 1
+# 11: Iterations for composition solver 2
+# 12: Iterations for Stokes solver
+# 13: Velocity iterations in Stokes preconditioner
+# 14: Schur complement iterations in Stokes preconditioner
+# 15: Visualization file name
+# 16: Minimal value for composition porosity
+# 17: Maximal value for composition porosity
+# 18: Global mass for composition porosity
+# 19: Minimal value for composition bound_fluid
+# 20: Maximal value for composition bound_fluid
+# 21: Global mass for composition bound_fluid
+# 22: Minimal value for composition peridotite
+# 23: Maximal value for composition peridotite
+# 24: Global mass for composition peridotite
+# 25: Minimal value for composition gabbro
+# 26: Maximal value for composition gabbro
+# 27: Global mass for composition gabbro
+# 28: Minimal value for composition MORB
+# 29: Maximal value for composition MORB
+# 30: Global mass for composition MORB
+# 31: Minimal value for composition sediment
+# 32: Maximal value for composition sediment
+# 33: Global mass for composition sediment
+# 34: RMS velocity (m/year)
+# 35: Max. velocity (m/year)
+# 36: Number of advected particles
+# 37: Particle file name
+0 0.000000000000e+00 0.000000000000e+00 10629 105457 46735 280410 1 0 0 0 267 269 269 test50_ref/solution/solution-00000 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 2.49553919e+13 0.00000000e+00 1.00000000e+00 2.19382077e+10 0.00000000e+00 1.00000000e+00 2.09302235e+11 0.00000000e+00 1.00000000e+00 4.33716656e+10 3.20973016e-04 3.07363819e-03 520821 test50_ref/particles/particles-00000 
+1 1.000000000000e+03 1.000000000000e+03 10629 105457 46735 280410 1 7 0 0 354 356 356                                 "" 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 0.00000000e+00 1.00000000e+00 2.49553919e+13 0.00000000e+00 1.00000000e+00 2.19382111e+10 0.00000000e+00 1.00000000e+00 2.09302184e+11 0.00000000e+00 1.00000000e+00 4.33716676e+10 1.73359691e-03 2.62338057e-02 520821                                   "" 

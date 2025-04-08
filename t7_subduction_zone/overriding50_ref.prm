@@ -1,0 +1,359 @@
+# This is a cookbook which simulates a simple 2D subduction system with
+# a hydrated sediment layer, MORB layer, gabbro layer, and peridotite
+# layer. The layers dehydrate as they are subducted, with the solid-fluid
+# reactions governed by an approximation published by Tian et al., 2018.
+#set World builder file                         = /home/900365648/storage/compressible-freesurface/overriding2.wb
+#set World builder file                         =/home/lxue07/aspect/compressible-freesurface/overriding2.wb
+#set World builder file                          =/home/lxue07/aspect/malawi/overriding2.wb
+set World builder file                         = ./overriding2.wb
+set Adiabatic surface temperature              = 1573
+set Nonlinear solver scheme                    =  single Advection, iterated Stokes # 
+set Nonlinear solver failure strategy          = continue with next timestep
+set Output directory                           = MCC-r0_default-values
+
+
+set Max nonlinear iterations                   = 50
+set Nonlinear solver tolerance                 = 1e-5 # next step
+set Dimension                                  = 2
+set End time                                   = 4e6
+set CFL number                                 = 0.2 # next step
+#set Surface pressure                           = 0
+set Pressure normalization                     = no
+set Maximum time step                          = 100000
+set Maximum first time step                    = 1000
+set Use operator splitting                     = false
+set Resume computation                         = auto
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type                              = block AMG #GMG # next step AMG
+    set GMRES solver restart length                     = 1000 # next test: 50 - 150
+    set Number of cheap Stokes solver steps             = 20000 
+    set Use full A block as preconditioner              = true
+    set Linear solver tolerance                         = 1e-8 #6
+    # set Linear solver A block tolerance                 = 1e-2
+    set Maximum number of expensive Stokes solver steps = 0
+  end
+  subsection Operator splitting parameters
+    set Reaction time step                     = 50
+    set Reaction time steps per advection step = 50
+  end
+end
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta  = 0.052 # 0.5
+    set cR    = 0.11 # 1.0
+  end
+end
+
+subsection Checkpointing
+  set Steps between checkpoint = 50
+end
+
+subsection Compositional fields
+  set Number of fields            = 6
+  set Names of fields             = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+  set Compositional field methods = field, field, particles, particles, particles, particles
+  set Mapped particle properties  = peridotite: initial peridotite, \
+                                   gabbro: initial gabbro, \
+                                   MORB: initial MORB, \
+                                   sediment: initial sediment
+end
+
+subsection Temperature field
+  set Temperature method = field
+end
+
+subsection Initial composition model
+  set List of model names = world builder
+  subsection World builder
+    set List of relevant compositions = porosity, bound_fluid, peridotite, gabbro, MORB, sediment
+  end
+end
+
+# ############### mesh deforamtion ###############
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: free surface & diffusion
+  #set Mesh deformation boundary indicators = top: free surface
+  set Additional tangential mesh velocity boundary indicators = left,right
+  subsection Free surface
+    set Free surface stabilization theta   = 0.5
+    set Surface velocity projection        = normal
+  end
+  subsection Diffusion
+    set Hillslope transport coefficient = 1e-8
+  end
+end
+subsection Particles
+  set Minimum particles per cell  = 25
+  set Maximum particles per cell  = 100
+  set Load balancing strategy     = remove and add particles
+  set List of particle properties = initial composition, pT path, position
+  set Interpolation scheme        = bilinear least squares
+  set Update ghost particles      = true
+  set Particle generator name     = reference cell
+  subsection Generator
+    subsection Reference cell
+      set Number of particles per cell per direction = 7
+    end
+  end
+end
+subsection Geometry model
+  set Model name = box
+  subsection Box
+    set X extent      = 8700e3
+    set Y extent      = 2900e3
+
+    set X repetitions = 6
+    set Y repetitions = 2
+
+    set Box origin X coordinate = 0
+    set Box origin Y coordinate = 0
+  end
+end
+
+
+subsection Gravity model
+  set Model name = function
+  subsection Function
+    set Variable names      = x,y
+    set Function expression = 0; -9.81
+  end
+end
+
+subsection Formulation
+  set Formulation = custom # Boussinesq approximation
+  
+  set Mass conservation = ask material model
+  set Temperature equation = real density
+end
+
+subsection Initial temperature model
+  set Model name = world builder
+end
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = top, bottom
+  set List of model names = box
+  subsection Box
+    set Bottom temperature = 1573
+    set Top temperature    = 273
+  end
+end
+
+
+subsection Material model
+
+  # set Model name = reactive fluid transport
+  set Model name = compositing
+  # set Material averaging                                 = geometric average only viscosity # next step harmonic mean 
+  set Material averaging                                 = harmonic average only viscosity # next step harmonic mean 
+
+  subsection Reactive Fluid Transport Model
+    set Base model                                       = visco plastic
+    set Reference fluid density                          = 1000
+    set Shear to bulk viscosity ratio                    = 0.1
+    set Reference fluid viscosity                        = 1
+    set Reference permeability                           = 5e-7
+    set Exponential fluid weakening factor               = 30
+    set Fluid compressibility                            = 0
+    set Fluid reaction time scale for operator splitting = 5e4
+    set Fluid-solid reaction scheme                      = tian approximation
+    # set Maximum weight percent water in peridotite       = 2
+    # set Maximum weight percent water in gabbro           = 1
+    # set Maximum weight percent water in MORB             = 2
+    # set Maximum weight percent water in sediment         = 3
+  end
+
+  subsection Multicomponent compressible
+    set Reference temperatures                       = 1573
+    set Reference densities                          = 3300,   3300,  3300,  3300,  3300,  3175,  3175
+    set Reference isothermal compressibilities       = 4e-12 #I think- is reference compressibility the same as reference isothermal compressibility?
+    set Isothermal bulk modulus pressure derivatives = 2 #4
+    set Reference thermal expansivities              = 2.0e-5 #2.0e-5, 2.0e-5,  2.0e-5, 2.95e-5, 2.0e-5, 2.0e-5, 2.0e-5 #2.e-5
+    set Isochoric specific heats                     = 1250 #1250,   1250,    1250,   1250,    1250,   1250,   1250 #1250 #
+    set Thermal conductivities                       = 4.7 #4.7,    4.7,     4.7,    4.3,     4.7,    4.7,    4.7 #the default in simple is 4.7, but lateral pipe sets 0.0. () dentotes an expected second value
+    #                                                background: ,  porosity: , bound_fluid: , peridotite: , gabbro: , MORB: , sediment: 
+    #peridotite: https://www.sciencedirect.com/science/article/pii/S2352152X23020662#t0015- average of pyroxene and olivine values.
+    
+    # set Reference temperatures = 273
+    # set Viscosities = 1e21
+    # set Viscosity averaging scheme = harmonic
+  end
+
+  subsection Visco Plastic
+    set Viscosity averaging scheme                        = harmonic # geometric
+    set Viscous flow law                                  = composite
+    # set Strain weakening mechanism                        = plastic weakening with plastic strain only
+    # set Start plasticity strain weakening intervals       = 0.25
+    # set End plasticity strain weakening intervals         = 1.5
+    # set Cohesion strain weakening factors                 = 0.25
+    # set Friction strain weakening factors                 = 0.25
+    set Use plastic damper                                = true
+    set Plastic damper viscosity                          = 1e20
+
+    set Viscosity prefactor scheme                        = HK04 olivine hydration
+    set Minimum strain rate                               = 1e-20
+    set Reference strain rate                             = 1e-20
+
+    set Phase transition depths           =   background: 660e3,  porosity: 660e3, bound_fluid: 660e3, peridotite: 660e3, gabbro: 660e3, MORB: 660e3, sediment: 125e3|660e3
+    set Phase transition widths           =   background: 1e3,    porosity: 1e3,   bound_fluid: 1e3,   peridotite: 1e3,   gabbro: 1e3,   MORB: 1e3,   sediment: 10e3|1e3
+    set Phase transition temperatures     =   background: 1573,   porosity: 1573,  bound_fluid: 1573,  peridotite: 1573,  gabbro: 1573,  MORB: 1573,  sediment: 1573|1573
+    set Phase transition Clapeyron slopes =   background: 0,      porosity: 0,     bound_fluid: 0,     peridotite: 0,     gabbro: 0,     MORB: 0,     sediment: 0|0
+
+    # set Densities                         =   background: 3300,   porosity: 3300,  bound_fluid: 3300,  peridotite: 3300,  gabbro: 3300,  MORB: 3175,  sediment: 3175
+
+    set Minimum viscosity   =   background: 2.5e18|2.5e18,  porosity: 2.5e18|2.5e18, bound_fluid: 2.5e18|2.5e18, peridotite: 2.5e18|2.5e18, gabbro: 2.5e18|2.5e18, MORB: 2.5e18|2.5e18, sediment: 9.999e18|2.5e18|2.5e18 #2.5e18 # next step: 2.5e18 to 2.5e24
+    set Maximum viscosity   =   background: 2.5e24|2.5e24,  porosity: 2.5e24|2.5e24, bound_fluid: 2.5e24|2.5e24, peridotite: 2.5e24|2.5e24, gabbro: 2.5e24|2.5e24, MORB: 2.5e24|2.5e24, sediment: 1.001e19|2.5e24|2.5e24 #2.5e24
+    # units in Hirth&Kohlstedt_2000: fH20: MPa, stress in MPa,  grainsize 1e-6 m
+    # units in Aspect:               fH20: Pa, stress in Pa, grainsize in m
+    # diffusion     1.5e9*1e-6*1e-18 = 1.5e-15
+    # dislocation   1.1e5*1e-6*1e-18 = 1.1e-19
+    set Prefactors for diffusion creep                    = background:  5.785e-13, \
+                                                            porosity:    5.785e-13, \
+                                                            bound_fluid: 5.785e-13, \
+                                                            peridotite:  5.785e-13, \
+                                                            gabbro:      5.785e-13, \
+                                                            MORB:        5.785e-13, \
+                                                            sediment:    5.785e-13
+                                                            
+
+    #set Query bound fluid for water fugacity              = false
+
+    set Water fugacity exponents for diffusion creep      = 0
+
+    set Stress exponents for diffusion creep              = 1.0
+    set Grain size exponents for diffusion creep          = 0
+
+    set Activation volumes for diffusion creep            = background:  2.5e-6, \
+                                                            porosity:    2.5e-6, \
+                                                            bound_fluid: 2.5e-6, \
+                                                            peridotite:  2.5e-6|2.5e-6, \
+                                                            gabbro:      2.5e-6, \
+                                                            MORB:        2.5e-6, \
+                                                            sediment:    2.5e-6
+
+    set Grain size                                        = 1e-3
+
+    set Activation energies for diffusion creep           = background:  300e3, \
+                                                            porosity:    300e3, \
+                                                            bound_fluid: 300e3, \
+                                                            peridotite:  300e3, \
+                                                            gabbro:      300e3, \
+                                                            MORB:        300e3, \
+                                                            sediment:    300e3
+
+    set Prefactors for dislocation creep                  = background:  8.499e-15|1e-50, \
+                                                            porosity:    8.499e-15|1e-50, \
+                                                            bound_fluid: 8.499e-15|1e-50, \
+                                                            peridotite:  8.499e-15|1e-50, \
+                                                            gabbro:      8.499e-15|1e-50, \
+                                                            MORB:        8.499e-15|1e-50, \
+                                                            sediment:    8.499e-15|8.499e-15|1e-50
+
+    set Water fugacity exponents for dislocation creep    = 0
+
+    set Stress exponents for dislocation creep            = 3.5
+
+    set Activation volumes for dislocation creep          = background:  12e-6, \
+                                                            porosity:    12e-6, \
+                                                            bound_fluid: 12e-6, \
+                                                            peridotite:  12e-6, \
+                                                            gabbro:      12e-6, \
+                                                            MORB:        12e-6, \
+                                                            sediment:    12e-6
+
+    set Activation energies for dislocation creep         = background:  540e3, \
+                                                            porosity:    540e3, \
+                                                            bound_fluid: 540e3, \
+                                                            peridotite:  540e3, \
+                                                            gabbro:      540e3, \
+                                                            MORB:        540e3, \
+                                                            sediment:    540e3
+
+    set Angles of internal friction                       = 30
+
+    set Cohesions                                         = background:  60e6, \
+                                                            porosity:    60e6, \
+                                                            bound_fluid: 60e6, \
+                                                            peridotite:  60e6, \
+                                                            gabbro:      60e6, \
+                                                            MORB:        60e6, \
+                                                            sediment:    60e6
+
+    set Maximum yield stress                              = 500e6 
+
+    set Use adiabatic pressure in plasticity              = true
+
+    set Thermal expansivities                             = 3.0e-5
+    set Thermal diffusivities                             = 1e-6
+    set Heat capacities                                   = 750
+  end
+
+  subsection Compositing
+    set Viscosity                      = visco plastic
+    set Density                        = multicomponent compressible
+    set Thermal expansion coefficient  = multicomponent compressible
+    set Specific heat                  = multicomponent compressible
+    set Thermal conductivity           = multicomponent compressible
+    set Compressibility                = multicomponent compressible
+    set Entropy derivative pressure    = multicomponent compressible
+    set Entropy derivative temperature = multicomponent compressible
+    set Reaction terms                 = multicomponent compressible #reactiuve fluid transport
+  end
+end
+
+subsection Mesh refinement
+  set Coarsening fraction                      = 0.3
+  set Refinement fraction                      = 0.5
+  set Initial adaptive refinement              = 2
+  set Initial global refinement                = 6
+  set Strategy                                 = temperature, viscosity, composition threshold, minimum refinement function
+  set Time steps between mesh refinement       = 2
+  set Refinement criteria scaling factors      = 2, 1.5, 1.5, 1
+  set Refinement criteria merge operation      = max
+  set Run postprocessors on initial refinement = false
+  set Skip solvers on initial refinement       = true
+
+  # minimum of 4 global refinements
+  subsection Minimum refinement function
+    set Function constants  = litho_thickness=120e3, ymax=2900e3
+    set Coordinate system   = cartesian
+    set Variable names      = x, y
+    set Function expression = if(y>(ymax-litho_thickness),6, \
+                              if(y>=(ymax - 662e3) && y<=(ymax - 658e3), 5, 4))
+  end
+
+  # refine where the porosity is bigger than 1e-6
+  subsection Composition threshold
+    set Compositional field thresholds = 1e-6, 0.001, 10.0, 10.0, 10.0, 0.5
+  end
+end
+
+subsection Boundary velocity model
+  #set Tangential velocity boundary indicators = top, left, right, bottom
+  set Tangential velocity boundary indicators = left, right, bottom
+end
+
+subsection Melt settings
+  set Include melt transport                  = false
+end
+
+subsection Postprocess
+  set List of postprocessors = visualization, composition statistics, velocity statistics,particles 
+  subsection Visualization
+    set List of output variables      = material properties, strain rate, named additional outputs
+    set Output format                 = vtu
+    set Time between graphical output = 1000e3
+    set Interpolate output            = true
+    set Number of grouped files       = 16
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+  subsection Particles
+    set Time between data output      = 1000.e3
+    set Data output format            = vtu
+  end
+end
